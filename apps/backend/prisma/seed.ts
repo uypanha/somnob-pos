@@ -159,6 +159,15 @@ async function main() {
       sortOrder: 3,
     },
   });
+
+  const apparelCategory = await prisma.category.create({
+    data: {
+      businessId: business.id,
+      name: 'Apparel & Clothing',
+      slug: 'apparel-clothing',
+      sortOrder: 4,
+    },
+  });
   console.log('🏷️ Seeded Catalog Categories');
 
   // 8. Seed Products with Variants, Barcodes, Retail & Wholesale Pricing
@@ -266,12 +275,155 @@ async function main() {
     include: { variants: true },
   });
 
+  // Clothing Product with Multiple Size Variants
+  const tshirtProduct = await prisma.product.create({
+    data: {
+      businessId: business.id,
+      categoryId: apparelCategory.id,
+      name: 'Angkor Heritage Graphic T-Shirt',
+      description: '100% combed cotton streetwear t-shirt with Angkor temple artwork. Available in sizes S to XXL.',
+      imageUrl: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=400&q=80',
+      hasVariants: true,
+      variants: {
+        create: [
+          {
+            variantName: 'Black - Small (S)',
+            sku: 'TSHIRT-BLK-S',
+            barcode: '884900111002',
+            size: 'S',
+            color: 'Black',
+            costPriceUsd: 4.5,
+            sellingPriceUsd: 12.0,
+            wholesalePriceUsd: 9.5,
+            minWholesaleQty: 10,
+            unitOfMeasure: 'PCS',
+          },
+          {
+            variantName: 'Black - Medium (M)',
+            sku: 'TSHIRT-BLK-M',
+            barcode: '884900111003',
+            size: 'M',
+            color: 'Black',
+            costPriceUsd: 4.5,
+            sellingPriceUsd: 12.0,
+            wholesalePriceUsd: 9.5,
+            minWholesaleQty: 10,
+            unitOfMeasure: 'PCS',
+          },
+          {
+            variantName: 'Black - Large (L)',
+            sku: 'TSHIRT-BLK-L',
+            barcode: '884900111004',
+            size: 'L',
+            color: 'Black',
+            costPriceUsd: 4.5,
+            sellingPriceUsd: 12.0,
+            wholesalePriceUsd: 9.5,
+            minWholesaleQty: 10,
+            unitOfMeasure: 'PCS',
+          },
+          {
+            variantName: 'Black - Extra Large (XL)',
+            sku: 'TSHIRT-BLK-XL',
+            barcode: '884900111005',
+            size: 'XL',
+            color: 'Black',
+            costPriceUsd: 5.0,
+            sellingPriceUsd: 13.5,
+            wholesalePriceUsd: 10.5,
+            minWholesaleQty: 10,
+            unitOfMeasure: 'PCS',
+          },
+          {
+            variantName: 'Black - Double Extra Large (XXL)',
+            sku: 'TSHIRT-BLK-XXL',
+            barcode: '884900111006',
+            size: 'XXL',
+            color: 'Black',
+            costPriceUsd: 5.5,
+            sellingPriceUsd: 14.5,
+            wholesalePriceUsd: 11.5,
+            minWholesaleQty: 10,
+            unitOfMeasure: 'PCS',
+          },
+        ],
+      },
+    },
+    include: { variants: true },
+  });
+
+  const hoodieProduct = await prisma.product.create({
+    data: {
+      businessId: business.id,
+      categoryId: apparelCategory.id,
+      name: 'Somnob Premium Fleece Hoodie',
+      description: 'Heavyweight fleece pullover hoodie with front kangaroo pocket.',
+      imageUrl: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=400&q=80',
+      hasVariants: true,
+      variants: {
+        create: [
+          {
+            variantName: 'Grey - Small (S)',
+            sku: 'HOODIE-GRY-S',
+            barcode: '884900222001',
+            size: 'S',
+            color: 'Heather Grey',
+            costPriceUsd: 12.0,
+            sellingPriceUsd: 26.0,
+            wholesalePriceUsd: 21.0,
+            minWholesaleQty: 5,
+            unitOfMeasure: 'PCS',
+          },
+          {
+            variantName: 'Grey - Medium (M)',
+            sku: 'HOODIE-GRY-M',
+            barcode: '884900222002',
+            size: 'M',
+            color: 'Heather Grey',
+            costPriceUsd: 12.0,
+            sellingPriceUsd: 26.0,
+            wholesalePriceUsd: 21.0,
+            minWholesaleQty: 5,
+            unitOfMeasure: 'PCS',
+          },
+          {
+            variantName: 'Grey - Large (L)',
+            sku: 'HOODIE-GRY-L',
+            barcode: '884900222003',
+            size: 'L',
+            color: 'Heather Grey',
+            costPriceUsd: 12.0,
+            sellingPriceUsd: 26.0,
+            wholesalePriceUsd: 21.0,
+            minWholesaleQty: 5,
+            unitOfMeasure: 'PCS',
+          },
+          {
+            variantName: 'Grey - Extra Large (XL)',
+            sku: 'HOODIE-GRY-XL',
+            barcode: '884900222004',
+            size: 'XL',
+            color: 'Heather Grey',
+            costPriceUsd: 13.0,
+            sellingPriceUsd: 28.0,
+            wholesalePriceUsd: 22.5,
+            minWholesaleQty: 5,
+            unitOfMeasure: 'PCS',
+          },
+        ],
+      },
+    },
+    include: { variants: true },
+  });
+
   // 9. Initialize Initial Stock for Flagship Store
   const allVariants = [
     ...cokeProduct.variants,
     ...beerProduct.variants,
     ...waterProduct.variants,
     ...snackProduct.variants,
+    ...tshirtProduct.variants,
+    ...hoodieProduct.variants,
   ];
 
   for (const variant of allVariants) {

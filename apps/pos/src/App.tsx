@@ -33,6 +33,8 @@ interface CartItem {
   variantName: string;
   sku: string;
   barcode?: string | null;
+  size?: string | null;
+  color?: string | null;
   unitPriceUsd: number;
   wholesalePriceUsd?: number | null;
   minWholesaleQty: number;
@@ -83,6 +85,7 @@ export default function PosApp() {
     { id: 'cat-bev', name: 'Beverages' },
     { id: 'cat-water', name: 'Water & Hydration' },
     { id: 'cat-snack', name: 'Snacks & Food' },
+    { id: 'cat-apparel', name: 'Apparel & Clothes' },
   ]);
 
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -102,6 +105,7 @@ export default function PosApp() {
       costPriceUsd: 0.5,
       unitOfMeasure: 'CAN',
       quantityOnHand: 96,
+      hasSizes: false,
     },
     {
       id: 'var-angkor',
@@ -117,6 +121,7 @@ export default function PosApp() {
       costPriceUsd: 0.75,
       unitOfMeasure: 'CAN',
       quantityOnHand: 72,
+      hasSizes: false,
     },
     {
       id: 'var-vital',
@@ -132,6 +137,7 @@ export default function PosApp() {
       costPriceUsd: 0.2,
       unitOfMeasure: 'BOTTLE',
       quantityOnHand: 150,
+      hasSizes: false,
     },
     {
       id: 'var-lays',
@@ -147,6 +153,169 @@ export default function PosApp() {
       costPriceUsd: 0.8,
       unitOfMeasure: 'BAG',
       quantityOnHand: 40,
+      hasSizes: false,
+    },
+    {
+      id: 'prod-tshirt',
+      productId: 'p-5',
+      productName: 'Angkor Heritage Graphic T-Shirt',
+      variantName: 'Multiple Sizes Available',
+      sku: 'TSHIRT-ANGKOR',
+      categoryId: 'cat-apparel',
+      sellingPriceUsd: 12.0,
+      wholesalePriceUsd: 9.5,
+      minWholesaleQty: 10,
+      costPriceUsd: 4.5,
+      unitOfMeasure: 'PCS',
+      quantityOnHand: 97,
+      hasSizes: true,
+      color: 'Black',
+      sizeVariants: [
+        {
+          id: 'var-tshirt-s',
+          variantName: 'Small (S)',
+          size: 'S',
+          color: 'Black',
+          sku: 'TSHIRT-BLK-S',
+          barcode: '884900111002',
+          sellingPriceUsd: 12.0,
+          wholesalePriceUsd: 9.5,
+          minWholesaleQty: 10,
+          costPriceUsd: 4.5,
+          quantityOnHand: 25,
+          unitOfMeasure: 'PCS',
+        },
+        {
+          id: 'var-tshirt-m',
+          variantName: 'Medium (M)',
+          size: 'M',
+          color: 'Black',
+          sku: 'TSHIRT-BLK-M',
+          barcode: '884900111003',
+          sellingPriceUsd: 12.0,
+          wholesalePriceUsd: 9.5,
+          minWholesaleQty: 10,
+          costPriceUsd: 4.5,
+          quantityOnHand: 32,
+          unitOfMeasure: 'PCS',
+        },
+        {
+          id: 'var-tshirt-l',
+          variantName: 'Large (L)',
+          size: 'L',
+          color: 'Black',
+          sku: 'TSHIRT-BLK-L',
+          barcode: '884900111004',
+          sellingPriceUsd: 12.0,
+          wholesalePriceUsd: 9.5,
+          minWholesaleQty: 10,
+          costPriceUsd: 4.5,
+          quantityOnHand: 18,
+          unitOfMeasure: 'PCS',
+        },
+        {
+          id: 'var-tshirt-xl',
+          variantName: 'Extra Large (XL)',
+          size: 'XL',
+          color: 'Black',
+          sku: 'TSHIRT-BLK-XL',
+          barcode: '884900111005',
+          sellingPriceUsd: 13.5,
+          wholesalePriceUsd: 10.5,
+          minWholesaleQty: 10,
+          costPriceUsd: 5.0,
+          quantityOnHand: 14,
+          unitOfMeasure: 'PCS',
+        },
+        {
+          id: 'var-tshirt-xxl',
+          variantName: 'Double Extra Large (XXL)',
+          size: 'XXL',
+          color: 'Black',
+          sku: 'TSHIRT-BLK-XXL',
+          barcode: '884900111006',
+          sellingPriceUsd: 14.5,
+          wholesalePriceUsd: 11.5,
+          minWholesaleQty: 10,
+          costPriceUsd: 5.5,
+          quantityOnHand: 8,
+          unitOfMeasure: 'PCS',
+        },
+      ],
+    },
+    {
+      id: 'prod-hoodie',
+      productId: 'p-6',
+      productName: 'Somnob Premium Fleece Hoodie',
+      variantName: 'Multiple Sizes Available',
+      sku: 'HOODIE-FLEECE',
+      categoryId: 'cat-apparel',
+      sellingPriceUsd: 26.0,
+      wholesalePriceUsd: 21.0,
+      minWholesaleQty: 5,
+      costPriceUsd: 12.0,
+      unitOfMeasure: 'PCS',
+      quantityOnHand: 53,
+      hasSizes: true,
+      color: 'Heather Grey',
+      sizeVariants: [
+        {
+          id: 'var-hoodie-s',
+          variantName: 'Small (S)',
+          size: 'S',
+          color: 'Heather Grey',
+          sku: 'HOODIE-GRY-S',
+          barcode: '884900222001',
+          sellingPriceUsd: 26.0,
+          wholesalePriceUsd: 21.0,
+          minWholesaleQty: 5,
+          costPriceUsd: 12.0,
+          quantityOnHand: 15,
+          unitOfMeasure: 'PCS',
+        },
+        {
+          id: 'var-hoodie-m',
+          variantName: 'Medium (M)',
+          size: 'M',
+          color: 'Heather Grey',
+          sku: 'HOODIE-GRY-M',
+          barcode: '884900222002',
+          sellingPriceUsd: 26.0,
+          wholesalePriceUsd: 21.0,
+          minWholesaleQty: 5,
+          costPriceUsd: 12.0,
+          quantityOnHand: 20,
+          unitOfMeasure: 'PCS',
+        },
+        {
+          id: 'var-hoodie-l',
+          variantName: 'Large (L)',
+          size: 'L',
+          color: 'Heather Grey',
+          sku: 'HOODIE-GRY-L',
+          barcode: '884900222003',
+          sellingPriceUsd: 26.0,
+          wholesalePriceUsd: 21.0,
+          minWholesaleQty: 5,
+          costPriceUsd: 12.0,
+          quantityOnHand: 12,
+          unitOfMeasure: 'PCS',
+        },
+        {
+          id: 'var-hoodie-xl',
+          variantName: 'Extra Large (XL)',
+          size: 'XL',
+          color: 'Heather Grey',
+          sku: 'HOODIE-GRY-XL',
+          barcode: '884900222004',
+          sellingPriceUsd: 28.0,
+          wholesalePriceUsd: 22.5,
+          minWholesaleQty: 5,
+          costPriceUsd: 13.0,
+          quantityOnHand: 6,
+          unitOfMeasure: 'PCS',
+        },
+      ],
     },
   ]);
 
@@ -183,6 +352,9 @@ export default function PosApp() {
 
   // Receipt Modal State
   const [completedReceipt, setCompletedReceipt] = useState<any | null>(null);
+
+  // Size Variant Selection Modal State
+  const [sizeModalProduct, setSizeModalProduct] = useState<any | null>(null);
 
   // Barcode Scanner Fast Buffer
   const barcodeBufferRef = useRef<string>('');
@@ -258,12 +430,27 @@ export default function PosApp() {
   }, [catalog]);
 
   const handleScannedBarcode = (barcode: string) => {
-    const found = catalog.find((item) => item.barcode === barcode || item.sku === barcode);
-    if (found) {
-      addToCart(found);
-    } else {
-      alert(`Product with barcode "${barcode}" not found in catalog.`);
+    const clean = barcode.trim().toLowerCase();
+    for (const item of catalog) {
+      if (item.hasSizes && item.sizeVariants) {
+        const match = item.sizeVariants.find(
+          (v: any) =>
+            (v.barcode && v.barcode.toLowerCase() === clean) ||
+            v.sku.toLowerCase() === clean,
+        );
+        if (match) {
+          addToCart(match, item.productName);
+          return;
+        }
+      } else if (
+        (item.barcode && item.barcode.toLowerCase() === clean) ||
+        item.sku.toLowerCase() === clean
+      ) {
+        addToCart(item);
+        return;
+      }
     }
+    alert(`Product with barcode or SKU "${barcode}" not found in catalog.`);
   };
 
   // Selected Customer Wholesale Status
@@ -282,6 +469,8 @@ export default function PosApp() {
       variantName: item.variantName,
       sku: item.sku,
       barcode: item.barcode,
+      size: item.size,
+      color: item.color,
       unitPriceUsd: item.unitPriceUsd,
       wholesalePriceUsd: item.wholesalePriceUsd,
       minWholesaleQty: item.minWholesaleQty,
@@ -308,7 +497,7 @@ export default function PosApp() {
   }, [cartSummary.totalUsd, tenderUsdNum, tenderKhrNum, exchangeRate]);
 
   // Cart Operations
-  const addToCart = (product: any) => {
+  const addToCart = (product: any, overrideProductName?: string) => {
     setCart((prev) => {
       const idx = prev.findIndex((item) => item.variantId === product.id);
       if (idx >= 0) {
@@ -320,10 +509,12 @@ export default function PosApp() {
         ...prev,
         {
           variantId: product.id,
-          productName: product.productName,
+          productName: overrideProductName || product.productName,
           variantName: product.variantName,
           sku: product.sku,
           barcode: product.barcode,
+          size: product.size || null,
+          color: product.color || null,
           unitPriceUsd: product.sellingPriceUsd,
           wholesalePriceUsd: product.wholesalePriceUsd,
           minWholesaleQty: product.minWholesaleQty || 1,
@@ -333,6 +524,14 @@ export default function PosApp() {
         },
       ];
     });
+  };
+
+  const handleProductCardClick = (product: any) => {
+    if (product.hasSizes && product.sizeVariants && product.sizeVariants.length > 0) {
+      setSizeModalProduct(product);
+    } else {
+      addToCart(product);
+    }
   };
 
   const updateQuantity = (variantId: string, delta: number) => {
@@ -786,12 +985,12 @@ export default function PosApp() {
               return (
                 <div
                   key={prod.id}
-                  onClick={() => addToCart(prod)}
+                  onClick={() => handleProductCardClick(prod)}
                   style={{
                     background: '#1e293b',
                     borderRadius: '10px',
                     padding: '0.85rem',
-                    border: '1px solid #334155',
+                    border: '1px solid ' + (prod.hasSizes ? '#3b82f6' : '#334155'),
                     cursor: 'pointer',
                     display: 'flex',
                     flexDirection: 'column',
@@ -837,9 +1036,18 @@ export default function PosApp() {
                     <strong style={{ fontSize: '0.95rem', display: 'block', color: '#ffffff' }}>
                       {prod.productName}
                     </strong>
-                    <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
-                      {prod.variantName}
-                    </span>
+                    {prod.hasSizes ? (
+                      <div style={{ marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '0.72rem', background: '#2563eb', color: '#ffffff', padding: '0.15rem 0.45rem', borderRadius: '4px', fontWeight: 600 }}>
+                          👕 {prod.sizeVariants.length} Sizes ({prod.sizeVariants.map((v: any) => v.size).join(', ')})
+                        </span>
+                        <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>Tap to select size →</span>
+                      </div>
+                    ) : (
+                      <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
+                        {prod.variantName}
+                      </span>
+                    )}
                   </div>
 
                   <div style={{ marginTop: '0.75rem' }}>
@@ -1024,6 +1232,21 @@ export default function PosApp() {
                         <strong style={{ fontSize: '0.9rem', color: '#ffffff' }}>
                           {item.productName}
                         </strong>
+                        {item.size && (
+                          <span
+                            style={{
+                              marginLeft: '6px',
+                              background: '#2563eb',
+                              color: '#ffffff',
+                              fontSize: '0.7rem',
+                              fontWeight: 700,
+                              padding: '0.1rem 0.45rem',
+                              borderRadius: '4px',
+                            }}
+                          >
+                            Size: {item.size}
+                          </span>
+                        )}
                         <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
                           {item.variantName} • ${effectiveUnitPrice.toFixed(2)}
                           {isWholesaleApplied && (
@@ -2055,6 +2278,226 @@ export default function PosApp() {
                 }}
               >
                 Confirm & Open Shift
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* 7. SIZE VARIANT SELECTION MODAL (FOR CLOTHES & APPAREL) */}
+      {sizeModalProduct && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.75)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            padding: '1rem',
+          }}
+          onClick={() => setSizeModalProduct(null)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: '#1e293b',
+              borderRadius: '16px',
+              padding: '1.75rem',
+              width: '100%',
+              maxWidth: '650px',
+              border: '1px solid #3b82f6',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+            }}
+          >
+            {/* Modal Header */}
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                marginBottom: '1.25rem',
+                borderBottom: '1px solid #334155',
+                paddingBottom: '1rem',
+              }}
+            >
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                  <span style={{ fontSize: '1.5rem' }}>👕</span>
+                  <h3 style={{ margin: 0, fontSize: '1.35rem', color: '#ffffff' }}>
+                    {sizeModalProduct.productName}
+                  </h3>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
+                    Select Size to Add to Cart
+                  </span>
+                  {sizeModalProduct.color && (
+                    <span
+                      style={{
+                        background: '#0f172a',
+                        color: '#38bdf8',
+                        padding: '0.15rem 0.5rem',
+                        borderRadius: '4px',
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        border: '1px solid #334155',
+                      }}
+                    >
+                      Color: {sizeModalProduct.color}
+                    </span>
+                  )}
+                  {isApprovedWholesale && (
+                    <span
+                      style={{
+                        background: '#fef3c7',
+                        color: '#b45309',
+                        padding: '0.15rem 0.5rem',
+                        borderRadius: '4px',
+                        fontSize: '0.75rem',
+                        fontWeight: 700,
+                      }}
+                    >
+                      ★ Wholesale Active
+                    </span>
+                  )}
+                </div>
+              </div>
+              <button
+                onClick={() => setSizeModalProduct(null)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: '#94a3b8',
+                  fontSize: '1.5rem',
+                  cursor: 'pointer',
+                  padding: '0.25rem',
+                  lineHeight: 1,
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Sizes Grid */}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
+                gap: '0.85rem',
+                marginBottom: '1.5rem',
+              }}
+            >
+              {sizeModalProduct.sizeVariants?.map((v: any) => {
+                const effectivePrice =
+                  isApprovedWholesale && v.wholesalePriceUsd
+                    ? v.wholesalePriceUsd
+                    : v.sellingPriceUsd;
+                const priceKhr = Math.round(effectivePrice * exchangeRate);
+                const isOutOfStock = v.quantityOnHand <= 0;
+
+                return (
+                  <button
+                    key={v.id}
+                    disabled={isOutOfStock}
+                    onClick={() => {
+                      addToCart(
+                        {
+                          ...v,
+                          productName: sizeModalProduct.productName,
+                        },
+                        sizeModalProduct.productName,
+                      );
+                      setSizeModalProduct(null);
+                    }}
+                    style={{
+                      background: isOutOfStock ? '#0f172a' : '#0f172a',
+                      border: '2px solid ' + (isOutOfStock ? '#334155' : '#2563eb'),
+                      borderRadius: '10px',
+                      padding: '1rem 0.75rem',
+                      cursor: isOutOfStock ? 'not-allowed' : 'pointer',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                      opacity: isOutOfStock ? 0.45 : 1,
+                      transition: 'all 0.15s ease',
+                      userSelect: 'none',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isOutOfStock) {
+                        e.currentTarget.style.borderColor = '#38bdf8';
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isOutOfStock) {
+                        e.currentTarget.style.borderColor = '#2563eb';
+                        e.currentTarget.style.transform = 'translateY(0)';
+                      }
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: '1.4rem',
+                        fontWeight: 800,
+                        color: isOutOfStock ? '#94a3b8' : '#ffffff',
+                      }}
+                    >
+                      {v.size || v.variantName}
+                    </span>
+
+                    <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+                      {v.variantName}
+                    </span>
+
+                    <div style={{ marginTop: '0.2rem', textAlign: 'center' }}>
+                      <div
+                        style={{
+                          fontSize: '1.05rem',
+                          fontWeight: 700,
+                          color: isApprovedWholesale ? '#fbbf24' : '#38bdf8',
+                        }}
+                      >
+                        ${effectivePrice.toFixed(2)}
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+                        {priceKhr.toLocaleString()}៛
+                      </div>
+                    </div>
+
+                    <span
+                      style={{
+                        marginTop: '0.35rem',
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        color: isOutOfStock ? '#f87171' : v.quantityOnHand > 10 ? '#34d399' : '#fbbf24',
+                      }}
+                    >
+                      {isOutOfStock ? 'Out of Stock' : `${v.quantityOnHand} in stock`}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Modal Actions */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
+              <button
+                onClick={() => setSizeModalProduct(null)}
+                style={{
+                  padding: '0.65rem 1.25rem',
+                  borderRadius: '6px',
+                  background: '#334155',
+                  color: '#ffffff',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                  fontSize: '0.9rem',
+                }}
+              >
+                Close
               </button>
             </div>
           </div>

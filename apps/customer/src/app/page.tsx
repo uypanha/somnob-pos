@@ -39,6 +39,8 @@ interface CartItem {
   minWholesaleQty: number;
   costPriceUsd: number;
   quantity: number;
+  size?: string | null;
+  color?: string | null;
 }
 
 export default function CustomerApp() {
@@ -80,11 +82,16 @@ export default function CustomerApp() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
+  // Size Variant Selection Modal State
+  const [sizeModalProduct, setSizeModalProduct] = useState<any | null>(null);
+  const [selectedSizeVariant, setSelectedSizeVariant] = useState<any | null>(null);
+
   const categories = [
     { id: 'all', name: 'All Items' },
     { id: 'cat-bev', name: 'Beverages' },
     { id: 'cat-water', name: 'Water & Hydration' },
     { id: 'cat-snack', name: 'Snacks & Food' },
+    { id: 'cat-apparel', name: 'Clothes & Apparel' },
   ];
 
   const catalog = [
@@ -139,6 +146,47 @@ export default function CustomerApp() {
       costPriceUsd: 0.8,
       icon: '🥔',
       description: 'Crispy salted golden potato chips.',
+    },
+    {
+      id: 'prod-angkor-tee',
+      productName: 'Angkor Heritage Graphic T-Shirt',
+      variantName: 'Sizes S - XXL',
+      sku: 'TEE-ANGKOR',
+      categoryId: 'cat-apparel',
+      sellingPriceUsd: 12.0,
+      wholesalePriceUsd: 9.5,
+      minWholesaleQty: 10,
+      costPriceUsd: 6.0,
+      icon: '👕',
+      description: '100% combed cotton tee with Angkor temple artwork.',
+      hasSizes: true,
+      sizeVariants: [
+        { id: 'var-tee-s', size: 'S', sku: 'TEE-ANGKOR-S', sellingPriceUsd: 12.0, stockQty: 25 },
+        { id: 'var-tee-m', size: 'M', sku: 'TEE-ANGKOR-M', sellingPriceUsd: 12.0, stockQty: 40 },
+        { id: 'var-tee-l', size: 'L', sku: 'TEE-ANGKOR-L', sellingPriceUsd: 12.0, stockQty: 30 },
+        { id: 'var-tee-xl', size: 'XL', sku: 'TEE-ANGKOR-XL', sellingPriceUsd: 13.5, stockQty: 15 },
+        { id: 'var-tee-xxl', size: 'XXL', sku: 'TEE-ANGKOR-XXL', sellingPriceUsd: 14.5, stockQty: 10 },
+      ],
+    },
+    {
+      id: 'prod-hoodie',
+      productName: 'Somnob Premium Fleece Hoodie',
+      variantName: 'Sizes S - XL',
+      sku: 'HOODIE-FLEECE',
+      categoryId: 'cat-apparel',
+      sellingPriceUsd: 26.0,
+      wholesalePriceUsd: 21.0,
+      minWholesaleQty: 5,
+      costPriceUsd: 15.0,
+      icon: '🧥',
+      description: 'Heavyweight 380gsm brushed fleece hoodie with front pocket.',
+      hasSizes: true,
+      sizeVariants: [
+        { id: 'var-hoodie-s', size: 'S', sku: 'HOODIE-FLEECE-S', sellingPriceUsd: 26.0, stockQty: 12 },
+        { id: 'var-hoodie-m', size: 'M', sku: 'HOODIE-FLEECE-M', sellingPriceUsd: 26.0, stockQty: 20 },
+        { id: 'var-hoodie-l', size: 'L', sku: 'HOODIE-FLEECE-L', sellingPriceUsd: 26.0, stockQty: 18 },
+        { id: 'var-hoodie-xl', size: 'XL', sku: 'HOODIE-FLEECE-XL', sellingPriceUsd: 28.0, stockQty: 8 },
+      ],
     },
   ];
 
@@ -213,6 +261,44 @@ export default function CustomerApp() {
     });
   };
 
+  const addToCartWithSize = (parentProduct: any, sizeVariant: any) => {
+    setCart((prev) => {
+      const idx = prev.findIndex((i) => i.variantId === sizeVariant.id);
+      if (idx >= 0) {
+        const copy = [...prev];
+        copy[idx].quantity += 1;
+        return copy;
+      }
+      return [
+        ...prev,
+        {
+          variantId: sizeVariant.id,
+          productName: parentProduct.productName,
+          variantName: `Size ${sizeVariant.size}`,
+          sku: sizeVariant.sku,
+          unitPriceUsd: sizeVariant.sellingPriceUsd,
+          wholesalePriceUsd: parentProduct.wholesalePriceUsd,
+          minWholesaleQty: parentProduct.minWholesaleQty,
+          costPriceUsd: parentProduct.costPriceUsd,
+          quantity: 1,
+          size: sizeVariant.size,
+          color: sizeVariant.color || null,
+        },
+      ];
+    });
+    setSizeModalProduct(null);
+    setSelectedSizeVariant(null);
+  };
+
+  const handleProductAddClick = (product: any) => {
+    if (product.hasSizes && product.sizeVariants && product.sizeVariants.length > 0) {
+      setSizeModalProduct(product);
+      setSelectedSizeVariant(product.sizeVariants[0]);
+    } else {
+      addToCart(product);
+    }
+  };
+
   const updateQuantity = (variantId: string, delta: number) => {
     setCart((prev) =>
       prev
@@ -256,6 +342,7 @@ export default function CustomerApp() {
           productName: i.productName,
           variantName: i.variantName,
           quantity: i.quantity,
+          size: i.size,
           unitPriceUsd:
             isApprovedWholesale && i.wholesalePriceUsd && i.quantity >= i.minWholesaleQty
               ? i.wholesalePriceUsd
@@ -830,7 +917,35 @@ export default function CustomerApp() {
 
                 {/* Add to Cart Button */}
                 <div>
-                  {inCart ? (
+                  {prod.hasSizes ? (
+                    (() => {
+                      const cartCount = cart
+                        .filter((i) => i.productName === prod.productName)
+                        .reduce((sum, i) => sum + i.quantity, 0);
+                      return (
+                        <button
+                          onClick={() => handleProductAddClick(prod)}
+                          style={{
+                            background: cartCount > 0 ? '#eff6ff' : '#2563eb',
+                            color: cartCount > 0 ? '#1d4ed8' : '#ffffff',
+                            border: cartCount > 0 ? '1px solid #bfdbfe' : 'none',
+                            padding: '0.45rem 0.75rem',
+                            borderRadius: '20px',
+                            fontSize: '0.8rem',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.25rem',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          <span>{cartCount > 0 ? `Sizes (${cartCount})` : 'Select Size'}</span>
+                          <ChevronRight size={14} />
+                        </button>
+                      );
+                    })()
+                  ) : inCart ? (
                     <div
                       style={{
                         display: 'flex',
@@ -1091,7 +1206,23 @@ export default function CustomerApp() {
                       }}
                     >
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>{item.productName}</div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
+                          <span style={{ fontWeight: 600, fontSize: '0.85rem' }}>{item.productName}</span>
+                          {item.size && (
+                            <span
+                              style={{
+                                background: '#e0e7ff',
+                                color: '#3730a3',
+                                fontSize: '0.7rem',
+                                padding: '0.1rem 0.4rem',
+                                borderRadius: '4px',
+                                fontWeight: 700,
+                              }}
+                            >
+                              Size: {item.size}
+                            </span>
+                          )}
+                        </div>
                         <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
                           ${unitPrice.toFixed(2)} x {item.quantity}
                           {isWholesaleApplied && (
@@ -1437,6 +1568,193 @@ export default function CustomerApp() {
               }}
             >
               {authTab === 'login' ? 'Sign In to Account' : 'Create & Continue'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 9. SIZE VARIANT SELECTION DRAWER/MODAL */}
+      {sizeModalProduct && selectedSizeVariant && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.65)',
+            zIndex: 1100,
+            display: 'flex',
+            alignItems: 'flex-end',
+            justifyContent: 'center',
+          }}
+          onClick={() => {
+            setSizeModalProduct(null);
+            setSelectedSizeVariant(null);
+          }}
+        >
+          <div
+            style={{
+              width: '100%',
+              maxWidth: '480px',
+              background: '#ffffff',
+              borderTopLeftRadius: '20px',
+              borderTopRightRadius: '20px',
+              padding: '1.25rem',
+              boxShadow: '0 -10px 25px rgba(0,0,0,0.15)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                <div
+                  style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '10px',
+                    background: '#f1f5f9',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '1.75rem',
+                    flexShrink: 0,
+                  }}
+                >
+                  {sizeModalProduct.icon}
+                </div>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: '1rem', color: '#0f172a' }}>{sizeModalProduct.productName}</h3>
+                  <p style={{ margin: '0.2rem 0 0 0', fontSize: '0.75rem', color: '#64748b' }}>
+                    {sizeModalProduct.description}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setSizeModalProduct(null);
+                  setSelectedSizeVariant(null);
+                }}
+                style={{
+                  background: '#f1f5f9',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: '30px',
+                  height: '30px',
+                  cursor: 'pointer',
+                  fontSize: '0.9rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Size Selector Label */}
+            <div style={{ marginBottom: '1.25rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#334155' }}>Select Size</span>
+                <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                  Selected: <strong style={{ color: '#2563eb' }}>{selectedSizeVariant.size}</strong>
+                </span>
+              </div>
+
+              {/* Size Tiles */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '0.5rem' }}>
+                {sizeModalProduct.sizeVariants.map((v: any) => {
+                  const isSelected = selectedSizeVariant.id === v.id;
+                  const isOutOfStock = v.stockQty <= 0;
+                  return (
+                    <button
+                      key={v.id}
+                      disabled={isOutOfStock}
+                      onClick={() => setSelectedSizeVariant(v)}
+                      style={{
+                        padding: '0.75rem 0.25rem',
+                        borderRadius: '10px',
+                        border: isSelected ? '2px solid #2563eb' : '1px solid #cbd5e1',
+                        background: isSelected ? '#eff6ff' : isOutOfStock ? '#f1f5f9' : '#ffffff',
+                        cursor: isOutOfStock ? 'not-allowed' : 'pointer',
+                        textAlign: 'center',
+                        opacity: isOutOfStock ? 0.45 : 1,
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: '1rem',
+                          fontWeight: 800,
+                          color: isSelected ? '#1d4ed8' : '#1e293b',
+                        }}
+                      >
+                        {v.size}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: '0.7rem',
+                          color: isSelected ? '#2563eb' : '#64748b',
+                          marginTop: '0.2rem',
+                          fontWeight: 600,
+                        }}
+                      >
+                        ${v.sellingPriceUsd.toFixed(2)}
+                      </div>
+                      <div style={{ fontSize: '0.65rem', color: isOutOfStock ? '#ef4444' : '#10b981', marginTop: '0.1rem' }}>
+                        {isOutOfStock ? 'Out' : `${v.stockQty} left`}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Selected Variant Price Summary & Add Button */}
+            <div
+              style={{
+                background: '#f8fafc',
+                borderRadius: '12px',
+                padding: '0.75rem 1rem',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '1rem',
+                border: '1px solid #e2e8f0',
+              }}
+            >
+              <div>
+                <span style={{ fontSize: '0.75rem', color: '#64748b' }}>Price (Size {selectedSizeVariant.size}):</span>
+                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a' }}>
+                  ${selectedSizeVariant.sellingPriceUsd.toFixed(2)}{' '}
+                  <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 500 }}>
+                    ({Math.round(selectedSizeVariant.sellingPriceUsd * exchangeRate).toLocaleString()}៛)
+                  </span>
+                </div>
+              </div>
+              <div style={{ fontSize: '0.75rem', color: '#64748b', textAlign: 'right' }}>
+                SKU: <span style={{ fontFamily: 'monospace' }}>{selectedSizeVariant.sku}</span>
+              </div>
+            </div>
+
+            {/* Action Button */}
+            <button
+              onClick={() => addToCartWithSize(sizeModalProduct, selectedSizeVariant)}
+              style={{
+                width: '100%',
+                padding: '0.9rem',
+                borderRadius: '12px',
+                background: '#2563eb',
+                color: '#ffffff',
+                border: 'none',
+                fontWeight: 700,
+                fontSize: '0.95rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
+              }}
+            >
+              <ShoppingBag size={18} />
+              <span>Add to Bag • Size {selectedSizeVariant.size} (${selectedSizeVariant.sellingPriceUsd.toFixed(2)})</span>
             </button>
           </div>
         </div>

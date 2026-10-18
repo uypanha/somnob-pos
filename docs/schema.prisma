@@ -231,6 +231,8 @@ model ProductVariant {
   wholesalePriceUsd Decimal?  @map("wholesale_price_usd") @db.Decimal(12, 2)
   minWholesaleQty  Int       @default(1) @map("min_wholesale_qty")
   unitOfMeasure    String    @default("PCS") @map("unit_of_measure") @db.VarChar(20)
+  size             String?   @db.VarChar(20)
+  color            String?   @db.VarChar(50)
   isActive         Boolean   @default(true) @map("is_active")
   deletedAt        DateTime? @map("deleted_at") @db.Timestamptz
 

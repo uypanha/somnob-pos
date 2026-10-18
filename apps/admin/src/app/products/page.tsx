@@ -14,6 +14,8 @@ interface ProductItem {
   wholesalePriceUsd: number | null;
   minWholesaleQty: number;
   unitOfMeasure: string;
+  size?: string | null;
+  color?: string | null;
   isActive: boolean;
 }
 
@@ -70,6 +72,51 @@ const INITIAL_PRODUCTS: ProductItem[] = [
     unitOfMeasure: 'BAG',
     isActive: true,
   },
+  {
+    id: 'prod-5',
+    name: 'Angkor Heritage Graphic T-Shirt',
+    category: 'Apparel & Clothing',
+    sku: 'TEE-ANGKOR-M',
+    barcode: '8850777002',
+    costPriceUsd: 6.0,
+    sellingPriceUsd: 12.0,
+    wholesalePriceUsd: 9.5,
+    minWholesaleQty: 10,
+    unitOfMeasure: 'PCS',
+    size: 'M',
+    color: 'Black',
+    isActive: true,
+  },
+  {
+    id: 'prod-6',
+    name: 'Angkor Heritage Graphic T-Shirt',
+    category: 'Apparel & Clothing',
+    sku: 'TEE-ANGKOR-L',
+    barcode: '8850777003',
+    costPriceUsd: 6.0,
+    sellingPriceUsd: 12.0,
+    wholesalePriceUsd: 9.5,
+    minWholesaleQty: 10,
+    unitOfMeasure: 'PCS',
+    size: 'L',
+    color: 'Black',
+    isActive: true,
+  },
+  {
+    id: 'prod-7',
+    name: 'Somnob Premium Fleece Hoodie',
+    category: 'Apparel & Clothing',
+    sku: 'HOODIE-FLEECE-L',
+    barcode: '8850888003',
+    costPriceUsd: 15.0,
+    sellingPriceUsd: 26.0,
+    wholesalePriceUsd: 21.0,
+    minWholesaleQty: 5,
+    unitOfMeasure: 'PCS',
+    size: 'L',
+    color: 'Navy',
+    isActive: true,
+  },
 ];
 
 export default function AdminProductsPage() {
@@ -88,6 +135,8 @@ export default function AdminProductsPage() {
   const [newWholesale, setNewWholesale] = useState('0.85');
   const [newMinWholesaleQty, setNewMinWholesaleQty] = useState('10');
   const [newUnit, setNewUnit] = useState('PCS');
+  const [newSize, setNewSize] = useState('');
+  const [newColor, setNewColor] = useState('');
 
   const exchangeRate = 4100;
 
@@ -96,7 +145,9 @@ export default function AdminProductsPage() {
     const matchesSearch =
       p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       p.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.barcode.includes(searchTerm);
+      p.barcode.includes(searchTerm) ||
+      (p.size && p.size.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (p.color && p.color.toLowerCase().includes(searchTerm.toLowerCase()));
     return matchesCategory && matchesSearch;
   });
 
@@ -115,6 +166,8 @@ export default function AdminProductsPage() {
       wholesalePriceUsd: newWholesale ? parseFloat(newWholesale) : null,
       minWholesaleQty: parseInt(newMinWholesaleQty, 10) || 1,
       unitOfMeasure: newUnit,
+      size: newSize.trim() ? newSize.trim().toUpperCase() : null,
+      color: newColor.trim() ? newColor.trim() : null,
       isActive: true,
     };
 
@@ -124,6 +177,8 @@ export default function AdminProductsPage() {
     setNewTitle('');
     setNewSku('');
     setNewBarcode('');
+    setNewSize('');
+    setNewColor('');
   };
 
   return (
@@ -193,6 +248,7 @@ export default function AdminProductsPage() {
           <option value="Beverages">Beverages</option>
           <option value="Water & Hydration">Water & Hydration</option>
           <option value="Snacks & Packaged Food">Snacks & Packaged Food</option>
+          <option value="Apparel & Clothing">Apparel & Clothing</option>
         </select>
       </div>
 
@@ -214,7 +270,37 @@ export default function AdminProductsPage() {
             {filteredProducts.map((p) => (
               <tr key={p.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
                 <td style={{ padding: '0.85rem 1rem', fontWeight: '600', color: '#1e293b' }}>
-                  {p.name}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
+                    <span>{p.name}</span>
+                    {p.size && (
+                      <span
+                        style={{
+                          background: '#e0e7ff',
+                          color: '#3730a3',
+                          padding: '0.15rem 0.45rem',
+                          borderRadius: '4px',
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                        }}
+                      >
+                        Size: {p.size}
+                      </span>
+                    )}
+                    {p.color && (
+                      <span
+                        style={{
+                          background: '#f1f5f9',
+                          color: '#475569',
+                          padding: '0.15rem 0.45rem',
+                          borderRadius: '4px',
+                          fontSize: '0.75rem',
+                          fontWeight: 500,
+                        }}
+                      >
+                        {p.color}
+                      </span>
+                    )}
+                  </div>
                 </td>
                 <td style={{ padding: '0.85rem 1rem', color: '#64748b' }}>
                   <span style={{ background: '#f1f5f9', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.8rem' }}>
@@ -296,6 +382,7 @@ export default function AdminProductsPage() {
                     <option value="Beverages">Beverages</option>
                     <option value="Water & Hydration">Water & Hydration</option>
                     <option value="Snacks & Packaged Food">Snacks & Packaged Food</option>
+                    <option value="Apparel & Clothing">Apparel & Clothing</option>
                   </select>
                 </div>
                 <div>
@@ -304,6 +391,30 @@ export default function AdminProductsPage() {
                     type="text"
                     value={newUnit}
                     onChange={(e) => setNewUnit(e.target.value)}
+                    style={{ width: '100%', boxSizing: 'border-box', padding: '0.6rem', borderRadius: '6px', border: '1px solid #cbd5e1' }}
+                  />
+                </div>
+              </div>
+
+              {/* Size & Color Variant Fields */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>Size Variant (e.g. S, M, L, XL)</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. M, L, XL (optional)"
+                    value={newSize}
+                    onChange={(e) => setNewSize(e.target.value)}
+                    style={{ width: '100%', boxSizing: 'border-box', padding: '0.6rem', borderRadius: '6px', border: '1px solid #cbd5e1' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>Color (optional)</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Black, Navy, White"
+                    value={newColor}
+                    onChange={(e) => setNewColor(e.target.value)}
                     style={{ width: '100%', boxSizing: 'border-box', padding: '0.6rem', borderRadius: '6px', border: '1px solid #cbd5e1' }}
                   />
                 </div>

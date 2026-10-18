@@ -32,6 +32,8 @@ export interface ProductVariantItem {
   variantName: string;
   sku: string;
   barcode?: string | null;
+  size?: string | null;
+  color?: string | null;
   costPriceUsd: number;
   sellingPriceUsd: number;
   wholesalePriceUsd?: number | null;
@@ -46,6 +48,8 @@ export interface CartLineItem {
   variantName: string;
   sku: string;
   barcode?: string | null;
+  size?: string | null;
+  color?: string | null;
   unitPriceUsd: number;
   wholesalePriceUsd?: number | null;
   minWholesaleQty: number;

@@ -56,6 +56,16 @@ export class CreateProductVariantDto {
   @IsString()
   @IsOptional()
   unitOfMeasure?: string;
+
+  @ApiPropertyOptional({ example: 'M', description: 'Clothing size (e.g. XS, S, M, L, XL, XXL, 32, 34)' })
+  @IsString()
+  @IsOptional()
+  size?: string;
+
+  @ApiPropertyOptional({ example: 'Black', description: 'Variant color' })
+  @IsString()
+  @IsOptional()
+  color?: string;
 }
 
 export class UpdateProductVariantDto {
@@ -107,6 +117,16 @@ export class UpdateProductVariantDto {
   @IsString()
   @IsOptional()
   unitOfMeasure?: string;
+
+  @ApiPropertyOptional({ example: 'M' })
+  @IsString()
+  @IsOptional()
+  size?: string;
+
+  @ApiPropertyOptional({ example: 'Black' })
+  @IsString()
+  @IsOptional()
+  color?: string;
 
   @ApiPropertyOptional({ example: true })
   @IsBoolean()

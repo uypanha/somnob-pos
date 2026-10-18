@@ -54,6 +54,8 @@ export class ProductService {
               variantName: v.variantName || 'Standard',
               sku: v.sku,
               barcode: v.barcode || null,
+              size: v.size || null,
+              color: v.color || null,
               costPriceUsd: new Prisma.Decimal(v.costPriceUsd ?? 0.0),
               sellingPriceUsd: new Prisma.Decimal(v.sellingPriceUsd),
               wholesalePriceUsd: v.wholesalePriceUsd ? new Prisma.Decimal(v.wholesalePriceUsd) : null,
@@ -299,6 +301,8 @@ export class ProductService {
                 wholesalePriceUsd: v.wholesalePriceUsd !== undefined ? (v.wholesalePriceUsd ? new Prisma.Decimal(v.wholesalePriceUsd) : null) : undefined,
                 minWholesaleQty: v.minWholesaleQty,
                 unitOfMeasure: v.unitOfMeasure,
+                size: v.size,
+                color: v.color,
                 isActive: v.isActive,
               },
             });

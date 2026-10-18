@@ -272,3 +272,42 @@
   - 15 shared unit tests passing in Node test runner.
 
 ---
+
+### ✅ Phase 14: Product Size Variants Enhancement (Completed & Verified)
+* **Status:** Complete (Branch: `feature/product-size-variants`)
+* **Branch Isolation:** Created and checked out `feature/product-size-variants`.
+* **Database & Domain Models (`apps/backend/prisma/schema.prisma`, `docs/schema.prisma`):**
+  - Added optional `size String? @db.VarChar(20)` and `color String? @db.VarChar(50)` fields to `ProductVariant`.
+  - Regenerated Prisma client via `npm run db:generate`.
+  - Updated seeder (`apps/backend/prisma/seed.ts`) with `Apparel & Clothing` category (`cat-apparel`) and clothing products with multi-size variants:
+    - "Angkor Heritage Graphic T-Shirt" (Sizes S, M, L, XL, XXL) with distinct SKUs, barcodes, and prices ($12.00 - $14.50).
+    - "Somnob Premium Fleece Hoodie" (Sizes S, M, L, XL) with distinct SKUs, barcodes, and prices ($26.00 - $28.00).
+* **Shared Types (`packages/shared/src/types.ts`):**
+  - Added `size?: string | null` and `color?: string | null` to `ProductVariantItem` and `CartLineItem`.
+  - All 15 shared financial precision and rounding tests passing.
+* **Backend DTOs & Service (`apps/backend/src/catalog/`):**
+  - Updated `CreateProductVariantDto` and `UpdateProductVariantDto` with `size` and `color`.
+  - Updated `ProductService` to map and persist `size` and `color` in atomic transaction creation and updates.
+  - All 79 backend tests passing across 16 test suites.
+* **Touchscreen POS PWA (`apps/pos/src/App.tsx`):**
+  - Added "Apparel & Clothes" category filter.
+  - Added clothing products with size variants to catalog.
+  - Dual barcode scan & touchscreen workflow:
+    - Scanning a garment's specific size barcode adds it directly to the cart.
+    - Tapping an apparel product card opens the interactive **Size Variant Selection Modal** with touch tiles (`[ S ]`, `[ M ]`, `[ L ]`, `[ XL ]`, `[ XXL ]`), stock levels, and disabled out-of-stock states.
+  - Cart line items display high-contrast `Size: M` pills.
+* **Customer Mobile Web App (`apps/customer/src/app/page.tsx`):**
+  - Added "Clothes & Apparel" category.
+  - Interactive **Size Selection Drawer/Modal** when tapping clothing items, allowing customers to select size before adding to bag.
+  - Real-time stock availability and USD / KHR dual price display per size tile.
+  - Cart drawer and placed order breakdown display `Size: S / M / L` badge pills.
+* **Admin Back-Office Portal (`apps/admin/src/app/products/page.tsx`):**
+  - Added "Apparel & Clothing" category filter.
+  - Master product table displays size and color badges.
+  - "Add New Product" modal includes Size Variant and Color inputs.
+* **Monorepo Build & Test Verification:**
+  - 79 backend tests passing.
+  - 15 shared package tests passing.
+  - All 5 workspace packages build cleanly with zero errors via Turborepo.
+
+---
