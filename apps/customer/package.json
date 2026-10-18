@@ -1,0 +1,24 @@
+{
+  "name": "@somnob/customer",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3002",
+    "build": "next build",
+    "start": "next start -p 3002",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@somnob/shared": "*",
+    "next": "^14.2.14",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "lucide-react": "^0.447.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.16.10",
+    "@types/react": "^18.3.10",
+    "@types/react-dom": "^18.3.0",
+    "typescript": "^5.6.2"
+  }
+}

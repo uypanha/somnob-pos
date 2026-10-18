@@ -1,0 +1,144 @@
+version: '3.8'
+
+services:
+  # ---------------------------------------------------------------------------
+  # 1. Primary PostgreSQL 16 Relational Database
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: somnob-postgres-prod
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-somnob_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-somnob_secure_prod_password_change_me}
+      POSTGRES_DB: ${POSTGRES_DB:-somnob_pos_prod}
+    volumes:
+      - somnob_pgdata_prod:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-somnob_admin} -d ${POSTGRES_DB:-somnob_pos_prod}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - somnob-internal
+
+  # ---------------------------------------------------------------------------
+  # 2. Redis 7 Cache & Fast State Store
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: somnob-redis-prod
+    restart: always
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - somnob_redisdata_prod:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - somnob-internal
+
+  # ---------------------------------------------------------------------------
+  # 3. NestJS Backend Core (API, Prisma, Financial Engine)
+  # ---------------------------------------------------------------------------
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    container_name: somnob-backend-prod
+    restart: always
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: postgresql://${POSTGRES_USER:-somnob_admin}:${POSTGRES_PASSWORD:-somnob_secure_prod_password_change_me}@postgres:5432/${POSTGRES_DB:-somnob_pos_prod}?schema=public
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET:-somnob_prod_jwt_super_secret_key_minimum_32_characters}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-somnob_prod_jwt_refresh_super_secret_key_minimum_32}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
+      JWT_REFRESH_EXPIRES_IN: ${JWT_REFRESH_EXPIRES_IN:-7d}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - somnob-internal
+
+  # ---------------------------------------------------------------------------
+  # 4. Touchscreen POS PWA (Nginx Alpine Static Server)
+  # ---------------------------------------------------------------------------
+  pos:
+    build:
+      context: .
+      dockerfile: apps/pos/Dockerfile
+    container_name: somnob-pos-prod
+    restart: always
+    depends_on:
+      - backend
+    networks:
+      - somnob-internal
+
+  # ---------------------------------------------------------------------------
+  # 5. Store Admin Dashboard (Next.js 14 Standalone)
+  # ---------------------------------------------------------------------------
+  admin:
+    build:
+      context: .
+      dockerfile: apps/admin/Dockerfile
+    container_name: somnob-admin-prod
+    restart: always
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost/api}
+    depends_on:
+      - backend
+    networks:
+      - somnob-internal
+
+  # ---------------------------------------------------------------------------
+  # 6. Customer Mobile Web App (Next.js 14 Standalone)
+  # ---------------------------------------------------------------------------
+  customer:
+    build:
+      context: .
+      dockerfile: apps/customer/Dockerfile
+    container_name: somnob-customer-prod
+    restart: always
+    environment:
+      NODE_ENV: production
+      PORT: 3002
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost/api}
+    depends_on:
+      - backend
+    networks:
+      - somnob-internal
+
+  # ---------------------------------------------------------------------------
+  # 7. Production Gateway Reverse Proxy (Nginx)
+  # ---------------------------------------------------------------------------
+  gateway:
+    image: nginx:1.25-alpine
+    container_name: somnob-gateway-prod
+    restart: always
+    ports:
+      - "${HTTP_PORT:-80}:80"
+    volumes:
+      - ./deploy/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend
+      - admin
+      - pos
+      - customer
+    networks:
+      - somnob-internal
+
+networks:
+  somnob-internal:
+    driver: bridge
+
+volumes:
+  somnob_pgdata_prod:
+  somnob_redisdata_prod:
