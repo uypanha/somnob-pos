@@ -106,6 +106,7 @@ export default function CustomerApp() {
       minWholesaleQty: 24,
       costPriceUsd: 0.5,
       icon: '🥤',
+      imageUrl: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300&auto=format&fit=crop&q=80',
       description: 'Refreshing sparkling cola drink served chilled.',
     },
     {
@@ -119,6 +120,7 @@ export default function CustomerApp() {
       minWholesaleQty: 24,
       costPriceUsd: 0.75,
       icon: '🍺',
+      imageUrl: 'https://images.unsplash.com/photo-1608270546103-97992796c303?w=300&auto=format&fit=crop&q=80',
       description: 'My Country, My Beer - classic Cambodian premium lager.',
     },
     {
@@ -132,6 +134,7 @@ export default function CustomerApp() {
       minWholesaleQty: 24,
       costPriceUsd: 0.2,
       icon: '💧',
+      imageUrl: 'https://images.unsplash.com/photo-1548839140-29a749e1bc4e?w=300&auto=format&fit=crop&q=80',
       description: 'Pure natural mineral water sourced from Cambodia.',
     },
     {
@@ -145,6 +148,7 @@ export default function CustomerApp() {
       minWholesaleQty: 10,
       costPriceUsd: 0.8,
       icon: '🥔',
+      imageUrl: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300&auto=format&fit=crop&q=80',
       description: 'Crispy salted golden potato chips.',
     },
     {
@@ -158,6 +162,7 @@ export default function CustomerApp() {
       minWholesaleQty: 10,
       costPriceUsd: 6.0,
       icon: '👕',
+      imageUrl: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=300&auto=format&fit=crop&q=80',
       description: '100% combed cotton tee with Angkor temple artwork.',
       hasSizes: true,
       sizeVariants: [
@@ -179,6 +184,7 @@ export default function CustomerApp() {
       minWholesaleQty: 5,
       costPriceUsd: 15.0,
       icon: '🧥',
+      imageUrl: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=300&auto=format&fit=crop&q=80',
       description: 'Heavyweight 380gsm brushed fleece hoodie with front pocket.',
       hasSizes: true,
       sizeVariants: [
@@ -872,7 +878,7 @@ export default function CustomerApp() {
                   boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
                 }}
               >
-                {/* Product Emoji Icon Placeholder */}
+                {/* Product Photo or Emoji Icon */}
                 <div
                   style={{
                     width: '64px',
@@ -884,9 +890,14 @@ export default function CustomerApp() {
                     justifyContent: 'center',
                     fontSize: '2rem',
                     flexShrink: 0,
+                    overflow: 'hidden',
                   }}
                 >
-                  {prod.icon}
+                  {prod.imageUrl ? (
+                    <img src={prod.imageUrl} alt={prod.productName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    prod.icon
+                  )}
                 </div>
 
                 {/* Details */}
@@ -1616,9 +1627,14 @@ export default function CustomerApp() {
                     justifyContent: 'center',
                     fontSize: '1.75rem',
                     flexShrink: 0,
+                    overflow: 'hidden',
                   }}
                 >
-                  {sizeModalProduct.icon}
+                  {sizeModalProduct.imageUrl ? (
+                    <img src={sizeModalProduct.imageUrl} alt={sizeModalProduct.productName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    sizeModalProduct.icon
+                  )}
                 </div>
                 <div>
                   <h3 style={{ margin: 0, fontSize: '1rem', color: '#0f172a' }}>{sizeModalProduct.productName}</h3>

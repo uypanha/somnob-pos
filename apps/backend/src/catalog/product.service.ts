@@ -86,12 +86,31 @@ export class ProductService {
 
         for (const store of stores) {
           for (const variant of product.variants) {
+            const matchingDtoVariant = dto.variants.find((v) => v.sku === variant.sku);
+            const initialQty = matchingDtoVariant?.initialQuantity ?? 0;
+
             balanceData.push({
               storeId: store.id,
               variantId: variant.id,
-              quantityOnHand: 0,
+              quantityOnHand: initialQty,
               quantityReserved: 0,
             });
+
+            if (initialQty > 0) {
+              await tx.stockMovement.create({
+                data: {
+                  storeId: store.id,
+                  variantId: variant.id,
+                  movementType: 'ADJUSTMENT_IN',
+                  quantityDelta: initialQty,
+                  quantityBefore: 0,
+                  quantityAfter: initialQty,
+                  referenceType: 'INITIAL_PRODUCT_SETUP',
+                  referenceId: product.id,
+                  reason: `Initial stock setup during product creation${variant.size ? ` (Size: ${variant.size})` : ''}`,
+                },
+              });
+            }
           }
         }
 

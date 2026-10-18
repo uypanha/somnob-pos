@@ -66,6 +66,12 @@ export class CreateProductVariantDto {
   @IsString()
   @IsOptional()
   color?: string;
+
+  @ApiPropertyOptional({ example: 25, description: 'Initial stock quantity for this variant on creation' })
+  @IsNumber()
+  @Min(0)
+  @IsOptional()
+  initialQuantity?: number;
 }
 
 export class UpdateProductVariantDto {

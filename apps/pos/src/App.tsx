@@ -98,6 +98,7 @@ export default function PosApp() {
       variantName: '330ml Can',
       sku: 'COKE-330',
       barcode: '8850123456789',
+      imageUrl: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=160&auto=format&fit=crop&q=80',
       categoryId: 'cat-bev',
       sellingPriceUsd: 0.85,
       wholesalePriceUsd: 0.7,
@@ -114,6 +115,7 @@ export default function PosApp() {
       variantName: '330ml Can',
       sku: 'ANGKOR-330',
       barcode: '8841234567890',
+      imageUrl: 'https://images.unsplash.com/photo-1608270546103-97992796c303?w=160&auto=format&fit=crop&q=80',
       categoryId: 'cat-bev',
       sellingPriceUsd: 1.1,
       wholesalePriceUsd: 0.95,
@@ -130,6 +132,7 @@ export default function PosApp() {
       variantName: '500ml Bottle',
       sku: 'VITAL-500',
       barcode: '8840001112223',
+      imageUrl: 'https://images.unsplash.com/photo-1548839140-29a749e1bc4e?w=160&auto=format&fit=crop&q=80',
       categoryId: 'cat-water',
       sellingPriceUsd: 0.35,
       wholesalePriceUsd: 0.28,
@@ -146,6 +149,7 @@ export default function PosApp() {
       variantName: '50g Pack',
       sku: 'LAYS-50',
       barcode: '8850987654321',
+      imageUrl: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=160&auto=format&fit=crop&q=80',
       categoryId: 'cat-snack',
       sellingPriceUsd: 1.25,
       wholesalePriceUsd: 1.05,
@@ -161,6 +165,7 @@ export default function PosApp() {
       productName: 'Angkor Heritage Graphic T-Shirt',
       variantName: 'Multiple Sizes Available',
       sku: 'TSHIRT-ANGKOR',
+      imageUrl: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=300&auto=format&fit=crop&q=80',
       categoryId: 'cat-apparel',
       sellingPriceUsd: 12.0,
       wholesalePriceUsd: 9.5,
@@ -249,6 +254,7 @@ export default function PosApp() {
       productName: 'Somnob Premium Fleece Hoodie',
       variantName: 'Multiple Sizes Available',
       sku: 'HOODIE-FLEECE',
+      imageUrl: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=300&auto=format&fit=crop&q=80',
       categoryId: 'cat-apparel',
       sellingPriceUsd: 26.0,
       wholesalePriceUsd: 21.0,
@@ -1006,16 +1012,16 @@ export default function PosApp() {
                       style={{
                         display: 'flex',
                         justifyContent: 'space-between',
-                        alignItems: 'flex-start',
-                        marginBottom: '0.4rem',
+                        alignItems: 'center',
+                        marginBottom: '0.45rem',
                       }}
                     >
                       <span
                         style={{
-                          fontSize: '0.75rem',
+                          fontSize: '0.72rem',
                           color: '#38bdf8',
                           background: '#0f172a',
-                          padding: '0.2rem 0.4rem',
+                          padding: '0.18rem 0.4rem',
                           borderRadius: '4px',
                           fontWeight: 600,
                         }}
@@ -1024,7 +1030,7 @@ export default function PosApp() {
                       </span>
                       <span
                         style={{
-                          fontSize: '0.75rem',
+                          fontSize: '0.72rem',
                           color: prod.quantityOnHand > 10 ? '#34d399' : '#f87171',
                           fontWeight: 600,
                         }}
@@ -1033,21 +1039,56 @@ export default function PosApp() {
                       </span>
                     </div>
 
-                    <strong style={{ fontSize: '0.95rem', display: 'block', color: '#ffffff' }}>
-                      {prod.productName}
-                    </strong>
-                    {prod.hasSizes ? (
-                      <div style={{ marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: '0.72rem', background: '#2563eb', color: '#ffffff', padding: '0.15rem 0.45rem', borderRadius: '4px', fontWeight: 600 }}>
-                          👕 {prod.sizeVariants.length} Sizes ({prod.sizeVariants.map((v: any) => v.size).join(', ')})
-                        </span>
-                        <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>Tap to select size →</span>
+                    <div style={{ display: 'flex', gap: '0.65rem', alignItems: 'flex-start' }}>
+                      {prod.imageUrl ? (
+                        <img
+                          src={prod.imageUrl}
+                          alt={prod.productName}
+                          style={{
+                            width: '48px',
+                            height: '48px',
+                            borderRadius: '8px',
+                            objectFit: 'cover',
+                            flexShrink: 0,
+                            border: '1px solid #334155',
+                          }}
+                        />
+                      ) : (
+                        <div
+                          style={{
+                            width: '48px',
+                            height: '48px',
+                            borderRadius: '8px',
+                            background: '#0f172a',
+                            border: '1px solid #334155',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '1.25rem',
+                            flexShrink: 0,
+                          }}
+                        >
+                          📦
+                        </div>
+                      )}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <strong style={{ fontSize: '0.92rem', display: 'block', color: '#ffffff', lineHeight: 1.25 }}>
+                          {prod.productName}
+                        </strong>
+                        {prod.hasSizes ? (
+                          <div style={{ marginTop: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
+                            <span style={{ fontSize: '0.7rem', background: '#2563eb', color: '#ffffff', padding: '0.12rem 0.4rem', borderRadius: '4px', fontWeight: 600 }}>
+                              👕 {prod.sizeVariants.length} Sizes
+                            </span>
+                            <span style={{ fontSize: '0.7rem', color: '#94a3b8' }}>Tap size →</span>
+                          </div>
+                        ) : (
+                          <span style={{ fontSize: '0.78rem', color: '#94a3b8', display: 'block', marginTop: '0.2rem' }}>
+                            {prod.variantName}
+                          </span>
+                        )}
                       </div>
-                    ) : (
-                      <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
-                        {prod.variantName}
-                      </span>
-                    )}
+                    </div>
                   </div>
 
                   <div style={{ marginTop: '0.75rem' }}>
@@ -2322,46 +2363,61 @@ export default function PosApp() {
                 paddingBottom: '1rem',
               }}
             >
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-                  <span style={{ fontSize: '1.5rem' }}>👕</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+                {sizeModalProduct.imageUrl ? (
+                  <img
+                    src={sizeModalProduct.imageUrl}
+                    alt={sizeModalProduct.productName}
+                    style={{
+                      width: '54px',
+                      height: '54px',
+                      borderRadius: '8px',
+                      objectFit: 'cover',
+                      border: '1px solid #475569',
+                      flexShrink: 0,
+                    }}
+                  />
+                ) : (
+                  <span style={{ fontSize: '1.75rem' }}>👕</span>
+                )}
+                <div>
                   <h3 style={{ margin: 0, fontSize: '1.35rem', color: '#ffffff' }}>
                     {sizeModalProduct.productName}
                   </h3>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
-                    Select Size to Add to Cart
-                  </span>
-                  {sizeModalProduct.color && (
-                    <span
-                      style={{
-                        background: '#0f172a',
-                        color: '#38bdf8',
-                        padding: '0.15rem 0.5rem',
-                        borderRadius: '4px',
-                        fontSize: '0.75rem',
-                        fontWeight: 600,
-                        border: '1px solid #334155',
-                      }}
-                    >
-                      Color: {sizeModalProduct.color}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.25rem' }}>
+                    <span style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
+                      Select Size to Add to Cart
                     </span>
-                  )}
-                  {isApprovedWholesale && (
-                    <span
-                      style={{
-                        background: '#fef3c7',
-                        color: '#b45309',
-                        padding: '0.15rem 0.5rem',
-                        borderRadius: '4px',
-                        fontSize: '0.75rem',
-                        fontWeight: 700,
-                      }}
-                    >
-                      ★ Wholesale Active
-                    </span>
-                  )}
+                    {sizeModalProduct.color && (
+                      <span
+                        style={{
+                          background: '#0f172a',
+                          color: '#38bdf8',
+                          padding: '0.15rem 0.5rem',
+                          borderRadius: '4px',
+                          fontSize: '0.75rem',
+                          fontWeight: 600,
+                          border: '1px solid #334155',
+                        }}
+                      >
+                        Color: {sizeModalProduct.color}
+                      </span>
+                    )}
+                    {isApprovedWholesale && (
+                      <span
+                        style={{
+                          background: '#fef3c7',
+                          color: '#b45309',
+                          padding: '0.15rem 0.5rem',
+                          borderRadius: '4px',
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                        }}
+                      >
+                        ★ Wholesale Active
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
               <button
